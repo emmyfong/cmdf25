@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cmdf25.databinding.FragmentNotificationsBinding;
 
+import org.w3c.dom.Text;
+
 public class NotificationsFragment extends Fragment {
 
     private FragmentNotificationsBinding binding;
@@ -24,8 +26,24 @@ public class NotificationsFragment extends Fragment {
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView profileName = binding.textProfileName;
+        final TextView profileAge = binding.textProfileAge;
+        final TextView profileAllergies = binding.textProfileAllergies;
+
+        notificationsViewModel.getName().observe(getViewLifecycleOwner(), profileName::setText);
+        notificationsViewModel.getAge().observe(getViewLifecycleOwner(), age -> profileAge.setText("Age: " + age));
+        notificationsViewModel.getAllergies().observe(getViewLifecycleOwner(), allergies -> {
+            StringBuilder allergiesText = new StringBuilder("Allergies: ");
+            if (allergies.length > 0) {
+                for (String allergy : allergies) {
+                    allergiesText.append(allergy).append(", ");
+                }
+                allergiesText.setLength(allergiesText.length() - 2); // Remove last comma
+            } else {
+                allergiesText.append("None");
+            }
+            profileAllergies.setText(allergiesText.toString());
+        });
         return root;
     }
 
